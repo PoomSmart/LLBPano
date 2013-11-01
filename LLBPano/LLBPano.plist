@@ -23,7 +23,7 @@
         <key>cell</key>
         <string>PSSwitchCell</string>
         <key>default</key>
-        <true/>
+        <false/>
         <key>defaults</key>
         <string>com.PS.LLBPano</string>
         <key>key</key>
