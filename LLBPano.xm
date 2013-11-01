@@ -1,6 +1,6 @@
 #import <AVFoundation/AVFoundation.h>
 
-static BOOL LLBPano;
+#define LLBPano [[[NSDictionary dictionaryWithContentsOfFile:@"/var/mobile/Library/Preferences/com.PS.LLBPano.plist"] objectForKey:@"LLBPanoEnabled"] boolValue]
 
 @interface PLCameraController
 @property(assign) AVCaptureDevice *currentDevice;
@@ -8,7 +8,10 @@ static BOOL LLBPano;
 
 %hook AVCaptureDevice
 
-- (BOOL)isLowLightBoostSupported { return LLBPano ? YES : %orig; }
+- (BOOL)isLowLightBoostSupported
+{
+	return LLBPano ? YES : %orig;
+}
 
 %end
 
@@ -21,30 +24,9 @@ static BOOL LLBPano;
 	if (mode == 2 && device == 0) {
    		[self.currentDevice lockForConfiguration:nil];
     	if ([self.currentDevice isLowLightBoostSupported])
-    		[self.currentDevice setAutomaticallyEnablesLowLightBoostWhenAvailable:LLBPano ? YES : NO];
+    		[self.currentDevice setAutomaticallyEnablesLowLightBoostWhenAvailable:LLBPano];
     	[self.currentDevice unlockForConfiguration];
     }
 }
 
 %end
-
-static void LLBPanoLoader()
-{
-	NSDictionary *dict = [NSDictionary dictionaryWithContentsOfFile:@"/var/mobile/Library/Preferences/com.PS.LLBPano.plist"];
-	id LLBPanoEnabled = [dict objectForKey:@"LLBPanoEnabled"];
-	LLBPano = LLBPanoEnabled ? [LLBPanoEnabled boolValue] : YES;
-}
-
-static void PostNotification(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo)
-{
-	LLBPanoLoader();
-}
-
-%ctor
-{
-	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-	CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, PostNotification, CFSTR("com.PS.LLBPano.settingschanged"), NULL, CFNotificationSuspensionBehaviorCoalesce);
-	LLBPanoLoader();
-  	%init
-  	[pool release];
-}
