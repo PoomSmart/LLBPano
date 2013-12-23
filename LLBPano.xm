@@ -15,18 +15,33 @@
 
 %end
 
+// Enable Low Light Boost if in Panorama mode
 %hook PLCameraController
 
-// Enable Low Light Boost if in Panorama mode
 - (void)_configureSessionWithCameraMode:(int)mode cameraDevice:(int)device
 {
 	%orig;
-	if (mode == 2 && device == 0) {
-   		[self.currentDevice lockForConfiguration:nil];
-    	if ([self.currentDevice isLowLightBoostSupported])
-    		[self.currentDevice setAutomaticallyEnablesLowLightBoostWhenAvailable:LLBPano];
-    	[self.currentDevice unlockForConfiguration];
-    }
+	dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.5*NSEC_PER_SEC), dispatch_get_main_queue(), ^(void){
+		if ((mode == 2 || (kCFCoreFoundationVersionNumber > 793.00 && mode == 3)) && device == 0) {
+			[self.currentDevice lockForConfiguration:nil];
+			if ([self.currentDevice isLowLightBoostSupported])
+				[self.currentDevice setAutomaticallyEnablesLowLightBoostWhenAvailable:LLBPano];
+			[self.currentDevice unlockForConfiguration];
+		}
+	});
+}
+
+- (void)_configureSessionWithCameraMode:(int)mode cameraDevice:(int)device HDRDetectionEnabled:(BOOL)enabled
+{
+	%orig;
+	dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.5*NSEC_PER_SEC), dispatch_get_main_queue(), ^(void){
+		if (mode == 3 && device == 0) {
+			[self.currentDevice lockForConfiguration:nil];
+			if ([self.currentDevice isLowLightBoostSupported])
+				[self.currentDevice setAutomaticallyEnablesLowLightBoostWhenAvailable:LLBPano];
+			[self.currentDevice unlockForConfiguration];
+		}
+	});
 }
 
 %end
