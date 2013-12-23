@@ -21,27 +21,27 @@
 - (void)_configureSessionWithCameraMode:(int)mode cameraDevice:(int)device
 {
 	%orig;
-	dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.5*NSEC_PER_SEC), dispatch_get_main_queue(), ^(void){
-		if ((mode == 2 || (kCFCoreFoundationVersionNumber > 793.00 && mode == 3)) && device == 0) {
+	if ((mode == 2 || (kCFCoreFoundationVersionNumber > 793.00 && mode == 3)) && device == 0) {
+		dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.2*NSEC_PER_SEC), dispatch_get_main_queue(), ^(void){
 			[self.currentDevice lockForConfiguration:nil];
 			if ([self.currentDevice isLowLightBoostSupported])
 				[self.currentDevice setAutomaticallyEnablesLowLightBoostWhenAvailable:LLBPano];
 			[self.currentDevice unlockForConfiguration];
-		}
-	});
+		});
+	}
 }
 
 - (void)_configureSessionWithCameraMode:(int)mode cameraDevice:(int)device HDRDetectionEnabled:(BOOL)enabled
 {
 	%orig;
-	dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.5*NSEC_PER_SEC), dispatch_get_main_queue(), ^(void){
-		if (mode == 3 && device == 0) {
+	if (mode == 3 && device == 0) {
+		dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.2*NSEC_PER_SEC), dispatch_get_main_queue(), ^(void){
 			[self.currentDevice lockForConfiguration:nil];
 			if ([self.currentDevice isLowLightBoostSupported])
 				[self.currentDevice setAutomaticallyEnablesLowLightBoostWhenAvailable:LLBPano];
 			[self.currentDevice unlockForConfiguration];
-		}
-	});
+		});
+	}
 }
 
 %end
