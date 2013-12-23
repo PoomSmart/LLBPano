@@ -8,6 +8,8 @@
     <dict>
       <key>cell</key>
       <string>PSLinkCell</string>
+      <key>icon</key>
+      <string>LLBPano.png</string>
       <key>label</key>
       <string>LLBPano</string>
     </dict>
