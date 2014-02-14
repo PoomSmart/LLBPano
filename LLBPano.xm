@@ -42,10 +42,12 @@
 {
 	%orig;
 	if (LLBPano) {
-		[self.currentDevice lockForConfiguration:nil];
-		if ([self.currentDevice isLowLightBoostSupported])
-			[self.currentDevice setAutomaticallyEnablesLowLightBoostWhenAvailable:YES];
-		[self.currentDevice unlockForConfiguration];
+		dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.3*NSEC_PER_SEC), dispatch_get_main_queue(), ^(void){
+			[self.currentDevice lockForConfiguration:nil];
+			if ([self.currentDevice isLowLightBoostSupported])
+				[self.currentDevice setAutomaticallyEnablesLowLightBoostWhenAvailable:YES];
+			[self.currentDevice unlockForConfiguration];
+		});
 	}
 }
 
