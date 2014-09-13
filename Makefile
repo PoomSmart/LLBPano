@@ -1,9 +1,10 @@
 GO_EASY_ON_ME = 1
+ARCHS = armv7 armv7s
 
 include theos/makefiles/common.mk
-export ARCHS = armv7 armv7s
+
 TWEAK_NAME = LLBPano
-LLBPano_FILES = LLBPano.xm
+LLBPano_FILES = Tweak.xm
 LLBPano_FRAMEWORKS = AVFoundation
 
 include $(THEOS_MAKE_PATH)/tweak.mk
