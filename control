@@ -1,8 +1,8 @@
 Package: org.thebigboss.llbpano
 Name: LLBPano
 Depends: mobilesubstrate, preferenceloader, gsc.still-camera, cy+model.iphone (>= 5) | cy+model.ipod (>= 5)
-Conflicts: cy+model.iphone (= 6.1), cy+model.iphone (= 6.2)
-Version: 1.1
+Conflicts: cy+model.iphone (>= 6)
+Version: 1.2
 Architecture: iphoneos-arm
 Description: enable low-light mode in panoramic capture.
 Author: PoomSmart

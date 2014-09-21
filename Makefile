@@ -5,7 +5,6 @@ include theos/makefiles/common.mk
 
 TWEAK_NAME = LLBPano
 LLBPano_FILES = Tweak.xm
-LLBPano_FRAMEWORKS = AVFoundation
 
 include $(THEOS_MAKE_PATH)/tweak.mk
 

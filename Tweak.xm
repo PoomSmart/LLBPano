@@ -1,8 +1,5 @@
 #import <AVFoundation/AVFoundation.h>
-
-#define isiOS6 (kCFCoreFoundationVersionNumber == 793.00)
-#define isiOS7 (kCFCoreFoundationVersionNumber > 793.00 && kCFCoreFoundationVersionNumber < 1140.0)
-#define isiOS8 (kCFCoreFoundationVersionNumber >= 1140.0)
+#import "../PS.h"
 
 #define LLBPano [[[NSDictionary dictionaryWithContentsOfFile:@"/var/mobile/Library/Preferences/com.PS.LLBPano.plist"] objectForKey:@"LLBPanoEnabled"] boolValue]
 
@@ -10,7 +7,7 @@
 @property(assign) AVCaptureDevice *currentDevice;
 @end
 
-@interface CAMCameraController
+@interface CAMCaptureController
 @property(assign) AVCaptureDevice *currentDevice;
 @end
 
@@ -62,7 +59,7 @@ static void enableLLB(id self)
 
 %group iOS8
 
-%hook CAMCameraController
+%hook CAMCaptureController
 
 - (void)_deviceConfigurationForPanoramaOptions:(NSDictionary *)options captureDevice:(id)device deviceFormat:(id *)format minFrameDuration:(id *)min maxFrameDuration:(id *)max
 {
