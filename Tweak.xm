@@ -1,14 +1,16 @@
 #import <AVFoundation/AVFoundation.h>
 #import "../PS.h"
 
-#define LLBPano [[[NSDictionary dictionaryWithContentsOfFile:@"/var/mobile/Library/Preferences/com.PS.LLBPano.plist"] objectForKey:@"LLBPanoEnabled"] boolValue]
+#define LLBPano [[NSDictionary dictionaryWithContentsOfFile:@"/var/mobile/Library/Preferences/com.PS.LLBPano.plist"][@"LLBPanoEnabled"] boolValue]
 
-@interface PLCameraController
+@protocol CameraControllerDelegate
 @property(assign) AVCaptureDevice *currentDevice;
 @end
 
-@interface CAMCaptureController
-@property(assign) AVCaptureDevice *currentDevice;
+@interface PLCameraController : NSObject <CameraControllerDelegate>
+@end
+
+@interface CAMCaptureController : NSObject <CameraControllerDelegate>
 @end
 
 %hook AVCaptureDevice
@@ -20,14 +22,14 @@
 
 %end
 
-static void enableLLB(id self)
+static void enableLLB(id<CameraControllerDelegate> self)
 {
-	if (!LLBPano)
-		return;
-	[[self currentDevice] lockForConfiguration:nil];
-	if ([[self currentDevice] isLowLightBoostSupported])
-		[[self currentDevice] setAutomaticallyEnablesLowLightBoostWhenAvailable:YES];
-	[[self currentDevice] unlockForConfiguration];
+	if (LLBPano) {
+		[self.currentDevice lockForConfiguration:nil];
+		if ([self.currentDevice isLowLightBoostSupported])
+			[self.currentDevice setAutomaticallyEnablesLowLightBoostWhenAvailable:YES];
+		[self.currentDevice unlockForConfiguration];
+	}
 }
 
 %hook PLCameraController
@@ -61,10 +63,12 @@ static void enableLLB(id self)
 
 %hook CAMCaptureController
 
-- (void)_deviceConfigurationForPanoramaOptions:(NSDictionary *)options captureDevice:(id)device deviceFormat:(id *)format minFrameDuration:(id *)min maxFrameDuration:(id *)max
+- (void)_configureSessionWithCameraMode:(int)mode cameraDevice:(int)device options:(id)options
 {
 	%orig;
-	enableLLB(self);
+	dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 1.5*NSEC_PER_SEC), dispatch_get_main_queue(), ^(void){
+		enableLLB(self);
+	});
 }
 
 %end
