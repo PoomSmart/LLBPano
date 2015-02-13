@@ -3,14 +3,14 @@
 
 #define LLBPano [[NSDictionary dictionaryWithContentsOfFile:@"/var/mobile/Library/Preferences/com.PS.LLBPano.plist"][@"LLBPanoEnabled"] boolValue]
 
-@protocol CameraControllerDelegate
+@protocol cameraControllerDelegate
 @property(assign) AVCaptureDevice *currentDevice;
 @end
 
-@interface PLCameraController : NSObject <CameraControllerDelegate>
+@interface PLCameraController : NSObject <cameraControllerDelegate>
 @end
 
-@interface CAMCaptureController : NSObject <CameraControllerDelegate>
+@interface CAMCaptureController : NSObject <cameraControllerDelegate>
 @end
 
 %hook AVCaptureDevice
@@ -22,7 +22,7 @@
 
 %end
 
-static void enableLLB(id<CameraControllerDelegate> self)
+static void enableLLB(id <cameraControllerDelegate> self)
 {
 	if (LLBPano) {
 		[self.currentDevice lockForConfiguration:nil];
@@ -66,9 +66,8 @@ static void enableLLB(id<CameraControllerDelegate> self)
 - (void)_configureSessionWithCameraMode:(int)mode cameraDevice:(int)device options:(id)options
 {
 	%orig;
-	dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 1.5*NSEC_PER_SEC), dispatch_get_main_queue(), ^(void){
+	if (mode == 3)
 		enableLLB(self);
-	});
 }
 
 %end
