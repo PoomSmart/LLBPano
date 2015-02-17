@@ -3,16 +3,6 @@
 
 #define LLBPano [[NSDictionary dictionaryWithContentsOfFile:@"/var/mobile/Library/Preferences/com.PS.LLBPano.plist"][@"LLBPanoEnabled"] boolValue]
 
-@protocol cameraControllerDelegate
-@property(assign) AVCaptureDevice *currentDevice;
-@end
-
-@interface PLCameraController : NSObject <cameraControllerDelegate>
-@end
-
-@interface CAMCaptureController : NSObject <cameraControllerDelegate>
-@end
-
 %hook AVCaptureDevice
 
 - (BOOL)isLowLightBoostSupported
